@@ -1,3 +1,5 @@
+import java.util.logging.Level;
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -9,13 +11,26 @@ public class Cell extends Rectangle
     private Cell rightCell;
     private Cell upperCell;
     private Cell lowerCell;
+    private MyThread myThread;
+
+    public MyThread getMyThread() 
+    {
+        return myThread;
+    }
+
+    public void setMyThread(MyThread myThread) 
+    {
+        this.myThread = myThread;
+    }
 
     public Cell(double height, double width,int column, int row)
     {
         super(height, width);
         this.column = column;
         this.row = row;
+        setStroke(Color.PURPLE);
         setRandomFill();
+        setOnClickAction();
     }
 
     public void setRandomFill()
@@ -30,15 +45,54 @@ public class Cell extends Rectangle
 
     public void setNeighborsAverageFill()
     {
-        double redAverage = (Color.web(leftCell.getFill().toString()).getRed() + Color.web(rightCell.getFill().toString()).getRed() + Color.web(upperCell.getFill().toString()).getRed() + Color.web(lowerCell.getFill().toString()).getRed()) / 4.0;
-        double greenAverage = (Color.web(leftCell.getFill().toString()).getGreen() + Color.web(rightCell.getFill().toString()).getGreen() + Color.web(upperCell.getFill().toString()).getGreen() + Color.web(lowerCell.getFill().toString()).getGreen()) / 4.0;
-        double blueAverage = (Color.web(leftCell.getFill().toString()).getBlue() + Color.web(rightCell.getFill().toString()).getBlue() + Color.web(upperCell.getFill().toString()).getBlue() + Color.web(lowerCell.getFill().toString()).getBlue()) / 4.0;
+        int activeNeighborsCount = 0;
+        double red = 0;
+        double green = 0;
+        double blue = 0;
+
+        Cell[] neighbors = {leftCell, rightCell, upperCell, lowerCell};
+
+        
+        for (Cell cell : neighbors) 
+        {
+            if (cell.getMyThread().getState() == Thread.State.WAITING)
+            {
+                continue;
+            }
+
+            red += (Color.web(cell.getFill().toString())).getRed();
+            green += (Color.web(cell.getFill().toString())).getGreen();
+            blue += (Color.web(cell.getFill().toString())).getBlue();
+
+            activeNeighborsCount++;
+        }
+        
+        if (activeNeighborsCount == 0)
+        {
+            return;
+        }
+
+        double redAverage = red / activeNeighborsCount;
+        double greenAverage = green / activeNeighborsCount;
+        double blueAverage = blue / activeNeighborsCount;
 
         setFill(Color.color(redAverage, greenAverage, blueAverage));
 
         // System.out.println("Color changed");
     }
 
+    private void setOnClickAction()
+    {
+        setOnMouseClicked(event -> 
+        {
+            if (event.getButton() == MouseButton.PRIMARY)
+            {
+                MyLogger.logger.log(Level.INFO, "Cell X = " + column + ", Y = " + row + " pressed");
+                myThread.setBlocked();
+                setStroke((getStroke() == Color.PURPLE) ? Color.BLACK : Color.PURPLE);
+            }
+        });
+    }
 
     public void setLeftCell(Cell leftCell) {
         this.leftCell = leftCell;

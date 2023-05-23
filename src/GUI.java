@@ -9,11 +9,11 @@ public class GUI
 {
     public GUI(Stage stage) throws IOException
     {
-        GridPane root = FXMLLoader.load(getClass().getResource("Board.fxml"));
+        GridPane root = new GridPane();
         Scene scene = new Scene(root);
         stage.setScene(scene);
 
-        new Board(root, 10, 10);
+        new Board(root, 20, 20);
         stage.show();
     }
     

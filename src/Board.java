@@ -1,11 +1,5 @@
 import java.util.logging.Level;
-
-import javafx.application.Platform;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 public class Board 
 {
@@ -13,6 +7,7 @@ public class Board
     private int columnsCount;
     private int rowsCount;
     private GridPane gridPane;
+    private Cell[][] gridCells;
 
     public Board(GridPane pane, int n, int m)
     {
@@ -20,23 +15,25 @@ public class Board
         this.rowsCount = m;
         this.gridPane = pane;
         setGrid();
+        setNeighbors(this.gridCells);
+        startThreads(this.gridCells);
     }
 
     // creates grid m x n grid an and fills it with Cell objects and assigns relations with neighbors
     // and starts thread on each of them
     private void setGrid()
     {
-        for (int i = 0; i < columnsCount; i++) {
-            ColumnConstraints colConst = new ColumnConstraints();
-            colConst.setPercentWidth(100.0 / columnsCount);
-            gridPane.getColumnConstraints().add(colConst);
-        }
+        // for (int i = 0; i < columnsCount; i++) {
+        //     ColumnConstraints colConst = new ColumnConstraints();
+        //     colConst.setPercentWidth(100.0 / columnsCount);
+        //     gridPane.getColumnConstraints().add(colConst);
+        // }
 
-        for (int i = 0; i < rowsCount; i++) {
-            RowConstraints rowConst = new RowConstraints();
-            rowConst.setPercentHeight(100.0 / rowsCount);
-            gridPane.getRowConstraints().add(rowConst);         
-        }
+        // for (int i = 0; i < rowsCount; i++) {
+        //     RowConstraints rowConst = new RowConstraints();
+        //     rowConst.setPercentHeight(100.0 / rowsCount);
+        //     gridPane.getRowConstraints().add(rowConst);         
+        // }
 
         Cell[][] gridCells = new Cell[rowsCount][columnsCount];
         for (int column = 0; column < columnsCount; column++)
@@ -44,14 +41,13 @@ public class Board
             for (int row = 0; row < rowsCount; row++)
             {
                 MyLogger.logger.log(Level.INFO, "Filing column " + column);
-                Cell cell = new Cell(gridPane.getPrefWidth() / columnsCount - 5, gridPane.getPrefHeight() / rowsCount - 5, column, row);
+                Cell cell = new Cell(50, 50, column, row);
                 gridCells[row][column] = cell;
                 gridPane.add(cell, column, row );
             }
         }
 
-        setNeighbors(gridCells);
-        startThreads(gridCells);
+        this.gridCells = gridCells;
     }
 
     private void setNeighbors(Cell[][] gridCells)
@@ -87,6 +83,7 @@ public class Board
                 MyThread thred = new MyThread(cell, mutex);
                 thred.setDaemon(true);
                 //Platform.runLater(thred);
+                cell.setMyThread(thred);
                 thred.start();
                 MyLogger.logger.log(Level.INFO, "Thred X: " + cell.getColumn() + ", Y: " + cell.getRow() + " started.");
             }
