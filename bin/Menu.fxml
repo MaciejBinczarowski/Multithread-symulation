@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuController">
+   <children>
+      <TextField fx:id="rowsField" layoutX="215.0" layoutY="47.0" promptText="Rows number" />
+      <TextField fx:id="columnsField" layoutX="215.0" layoutY="89.0" promptText="Columns number" />
+      <TextField fx:id="propabilityField" layoutX="215.0" layoutY="142.0" promptText="Propability" />
+      <TextField fx:id="speedField" layoutX="215.0" layoutY="200.0" promptText="Speed" />
+      <Button layoutX="269.0" layoutY="262.0" mnemonicParsing="false" onAction="#setOnButtonPressed" text="Confrim" />
+   </children>
+</Pane>
