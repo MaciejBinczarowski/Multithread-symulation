@@ -13,8 +13,10 @@ public class GUI
         Parent root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.setTitle("Symulation");
+        stage.setResizable(false);
 
-        // new Board(root, 6, 6);
+        // new Board(root, 20, 20);
         stage.show();
     }
     

@@ -29,13 +29,13 @@ public class MenuController
         double speed = Double.parseDouble(speedField.getText());
 
         GridPane root = new GridPane();
-        Scene scene = new Scene(root);
+        //Scene scene = new Scene(root);
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
+        stage.close();
+        stage.getScene().setRoot(root);;
 
-        new Board(root, columnsCount, rowsCount);
+        new Board(root, columnsCount, rowsCount, propability, speed);
         stage.show();
-
     }
     
 }

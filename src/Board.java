@@ -7,13 +7,18 @@ public class Board
     private int columnsCount;
     private int rowsCount;
     private GridPane gridPane;
+    private double propability;
+    private double speed;
     private Cell[][] gridCells;
 
-    public Board(GridPane pane, int n, int m)
+    public Board(GridPane pane, int n, int m, double propability, double speed)
     {
         this.columnsCount = n;
         this.rowsCount = m;
         this.gridPane = pane;
+        this.propability = propability;
+        this.speed = speed;
+
         setGrid();
         setNeighbors(this.gridCells);
         startThreads(this.gridCells);
@@ -80,7 +85,7 @@ public class Board
         {
             for (Cell cell : row) 
             {
-                MyThread thred = new MyThread(cell, mutex);
+                MyThread thred = new MyThread(cell, mutex, propability, speed);
                 thred.setDaemon(true);
                 //Platform.runLater(thred);
                 cell.setMyThread(thred);

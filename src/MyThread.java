@@ -6,8 +6,8 @@ public class MyThread extends Thread
 {
     private Object mutex;
     private Cell cell;
-    private double propability = 0.1;
-    private double speed = 500; 
+    private double propability;
+    private double speed;
     volatile private boolean isBlocked = false;
 
     synchronized public void setBlocked() 
@@ -16,10 +16,12 @@ public class MyThread extends Thread
         notify();
     }
 
-    public MyThread(Cell cell, Object mutex)
+    public MyThread(Cell cell, Object mutex, double propability, double speed)
     {
         this.cell = cell;
         this.mutex = mutex;
+        this.propability = propability;
+        this.speed = speed;
     }
     
     @Override

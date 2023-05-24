@@ -2,6 +2,7 @@ import java.util.logging.Level;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 
 public class Cell extends Rectangle
 {
@@ -28,7 +29,6 @@ public class Cell extends Rectangle
         super(height, width);
         this.column = column;
         this.row = row;
-        setStroke(Color.PURPLE);
         setRandomFill();
         setOnClickAction();
     }
@@ -89,7 +89,8 @@ public class Cell extends Rectangle
             {
                 MyLogger.logger.log(Level.INFO, "Cell X = " + column + ", Y = " + row + " pressed");
                 myThread.setBlocked();
-                setStroke((getStroke() == Color.PURPLE) ? Color.BLACK : Color.PURPLE);
+                setStroke((getStroke() == null) ? Color.BLACK : null);
+                setStrokeType(StrokeType.INSIDE);
             }
         });
     }
