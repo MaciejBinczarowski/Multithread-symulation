@@ -1,4 +1,6 @@
 import java.util.logging.Level;
+
+import javafx.application.Platform;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -13,6 +15,11 @@ public class Cell extends Rectangle
     private Cell upperCell;
     private Cell lowerCell;
     private MyThread myThread;
+    private Object myMutex = new Object();
+
+    public Object getMyMutex() {
+        return myMutex;
+    }
 
     public MyThread getMyThread() 
     {
@@ -35,12 +42,14 @@ public class Cell extends Rectangle
 
     public void setRandomFill()
     {
-        double red = RandomNumberGenerator.getRandomDouble();
-        double green = RandomNumberGenerator.getRandomDouble();
-        double blue = RandomNumberGenerator.getRandomDouble();
+        synchronized(myMutex)
+        {
+            double red = RandomNumberGenerator.getRandomDouble();
+            double green = RandomNumberGenerator.getRandomDouble();
+            double blue = RandomNumberGenerator.getRandomDouble();
 
-        setFill(Color.color(red, green, blue));
-        // System.out.println("Color randomly changed");
+            Platform.runLater(() -> setFill(Color.color(red, green, blue)));
+        }
     }
 
     public void setNeighborsAverageFill()
@@ -52,19 +61,29 @@ public class Cell extends Rectangle
 
         Cell[] neighbors = {leftCell, rightCell, upperCell, lowerCell};
 
-        
-        for (Cell cell : neighbors) 
+        synchronized(myMutex)
         {
-            if (cell.getMyThread().getState() == Thread.State.WAITING)
+            for (Cell cell : neighbors) 
             {
-                continue;
+                synchronized(cell.getMyMutex())
+                {
+                    if (cell.getMyThread() == null)
+                    {
+                        return;
+                    }
+                    
+                    if ((cell.getMyThread().getState()) == Thread.State.WAITING)
+                    {
+                        continue;
+                    }
+
+                    red += (Color.web(cell.getFill().toString())).getRed();
+                    green += (Color.web(cell.getFill().toString())).getGreen();
+                    blue += (Color.web(cell.getFill().toString())).getBlue();
+
+                    activeNeighborsCount++;
+                }
             }
-
-            red += (Color.web(cell.getFill().toString())).getRed();
-            green += (Color.web(cell.getFill().toString())).getGreen();
-            blue += (Color.web(cell.getFill().toString())).getBlue();
-
-            activeNeighborsCount++;
         }
         
         if (activeNeighborsCount == 0)
@@ -76,7 +95,7 @@ public class Cell extends Rectangle
         double greenAverage = green / activeNeighborsCount;
         double blueAverage = blue / activeNeighborsCount;
 
-        setFill(Color.color(redAverage, greenAverage, blueAverage));
+        Platform.runLater(() -> setFill(Color.color(redAverage, greenAverage, blueAverage)));
 
         // System.out.println("Color changed");
     }

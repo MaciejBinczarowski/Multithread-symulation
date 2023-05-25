@@ -12,8 +12,12 @@ public class MyThread extends Thread
 
     synchronized public void setBlocked() 
     {
-        this.isBlocked = !this.isBlocked;
-        notify();
+        synchronized(cell.getMyMutex())
+        {
+            System.out.println("Zmieniam aktywność");
+            this.isBlocked = !this.isBlocked;
+            notify();
+        }
     }
 
     public MyThread(Cell cell, Object mutex, double propability, double speed)
@@ -52,19 +56,19 @@ public class MyThread extends Thread
 
             synchronized(mutex)
             {
-                System.out.println("Start X: " + cell.getColumn() + " Y: " + cell.getRow());
+                // System.out.println("Start X: " + cell.getColumn() + " Y: " + cell.getRow());
 
                 if (RandomNumberGenerator.getRandomDouble() <= propability)
                 {
                     // MyLogger.logger.log(Level.INFO, "Column: " + cell.getColumn() + ", row: " + cell.getRow() + " changed color");
-                    Platform.runLater(() -> cell.setRandomFill());
+                    cell.setRandomFill();
                 }
                 else
                 {
-                    Platform.runLater(() -> cell.setNeighborsAverageFill());
+                    cell.setNeighborsAverageFill();
                 }
 
-                System.out.println("End X: " + cell.getColumn() + " Y: " + cell.getRow());
+                // System.out.println("End X: " + cell.getColumn() + " Y: " + cell.getRow());
             }
         }
     }

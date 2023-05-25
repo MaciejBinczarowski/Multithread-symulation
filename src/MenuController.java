@@ -1,3 +1,5 @@
+import java.util.logging.Level;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -23,19 +25,49 @@ public class MenuController
     @FXML
     private void setOnButtonPressed(ActionEvent event)
     {
-        int rowsCount = Integer.parseInt(rowsField.getText());
-        int columnsCount = Integer.parseInt(columnsField.getText());
-        double propability = Double.parseDouble(propabilityField.getText());
-        double speed = Double.parseDouble(speedField.getText());
+        try
+        {
+            int rowsCount = Integer.parseInt(rowsField.getText());
 
-        GridPane root = new GridPane();
-        //Scene scene = new Scene(root);
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        stage.close();
-        stage.getScene().setRoot(root);;
+            if (rowsCount <= 0)
+            {
+                throw new IllegalArgumentException("Rows number must be positive, got " + rowsCount);
+            }
 
-        new Board(root, columnsCount, rowsCount, propability, speed);
-        stage.show();
+            int columnsCount = Integer.parseInt(columnsField.getText());
+
+            if (columnsCount <= 0)
+            {
+                throw new IllegalArgumentException("Rows number must be positive, got " + columnsCount);
+            }
+
+            double propability = Double.parseDouble(propabilityField.getText());
+
+            if (propability > 1 || propability < 0)
+            {
+                throw new IllegalArgumentException("Propability must be in range <0, 1>, got " + propability);
+            }
+
+            double speed = Double.parseDouble(speedField.getText());
+
+            if (speed <= 0)
+            {
+                throw new IllegalArgumentException("Speed must be positive, got " + speed);
+            }
+
+            GridPane root = new GridPane();
+            //Scene scene = new Scene(root);
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            stage.close();
+            stage.getScene().setRoot(root);;
+
+            new Board(root, columnsCount, rowsCount, propability, speed);
+            stage.show();
+        }
+        catch (Exception exception)
+        {
+            MyLogger.logger.log(Level.INFO, exception.getMessage());
+        }
     }
     
 }

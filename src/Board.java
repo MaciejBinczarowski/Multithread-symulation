@@ -28,18 +28,6 @@ public class Board
     // and starts thread on each of them
     private void setGrid()
     {
-        // for (int i = 0; i < columnsCount; i++) {
-        //     ColumnConstraints colConst = new ColumnConstraints();
-        //     colConst.setPercentWidth(100.0 / columnsCount);
-        //     gridPane.getColumnConstraints().add(colConst);
-        // }
-
-        // for (int i = 0; i < rowsCount; i++) {
-        //     RowConstraints rowConst = new RowConstraints();
-        //     rowConst.setPercentHeight(100.0 / rowsCount);
-        //     gridPane.getRowConstraints().add(rowConst);         
-        // }
-
         Cell[][] gridCells = new Cell[rowsCount][columnsCount];
         for (int column = 0; column < columnsCount; column++)
         {
